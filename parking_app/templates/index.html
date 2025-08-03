@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Properties</h1>
+<ul>
+  {% for prop in properties %}
+    <li>{{ prop.name }} - {{ prop.address }} ({{ prop.vehicles|length }} vehicles)</li>
+  {% endfor %}
+</ul>
+{% endblock %}
