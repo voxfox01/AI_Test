@@ -11,7 +11,7 @@ def create_app(config_object=None):
     app = Flask(__name__)
     app.config.from_mapping(
         SECRET_KEY='changeme',
-        SQLALCHEMY_DATABASE_URI='mysql+pymysql://user:password@localhost/parking',
+        SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://user:password@localhost/parking',
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
     if config_object:

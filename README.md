@@ -5,7 +5,11 @@ This repository contains a sample Flask application that demonstrates a basic pa
 ## Requirements
 
 - Python 3.10+
+
+- PostgreSQL server
+=======
 - MySQL server
+
 
 Install dependencies:
 
@@ -13,7 +17,11 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+
+Configure the PostgreSQL URI in `parking_app/__init__.py` to match your database credentials.
+=======
 Configure the MySQL URI in `parking_app/__init__.py` to match your database credentials.
+
 
 ## Running the Application
 
