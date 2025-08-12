@@ -1,7 +1,11 @@
+
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from dotenv import load_dotenv
 
+load_dotenv()
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -9,9 +13,14 @@ login_manager = LoginManager()
 
 def create_app(config_object=None):
     app = Flask(__name__)
+
+    # Credentials
+    db_url = os.environ.get("DATABASE_URL")
+    secret_key = os.environ.get("SECRET_KEY", "dev-insecure")
+
     app.config.from_mapping(
-        SECRET_KEY='changeme',
-        SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://user:password@localhost/parking',
+        SECRET_KEY=secret_key,
+        SQLALCHEMY_DATABASE_URI=db_url,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
     if config_object:

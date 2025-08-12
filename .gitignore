@@ -3,4 +3,5 @@ __pycache__/
 
 # Environment variables
 webenv/
-
+.env
+.flaskenv
