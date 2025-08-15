@@ -40,6 +40,7 @@ class PropertyCustomer(db.Model, Type2Mixin):
     )
 
 
+
 class SecurityCustomer(db.Model, Type2Mixin):
     __tablename__ = "Security_Customers"
 
