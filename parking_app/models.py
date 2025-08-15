@@ -89,7 +89,7 @@ class Credential(db.Model, Type2Mixin):
     Credential_ID = db.Column(db.Integer, primary_key=True)
     User_ID = db.Column(db.Integer, db.ForeignKey("Users.User_ID"), nullable=False)
     Username = db.Column(db.String(80), unique=True, nullable=False)
-    Password_Hash = db.Column(db.String(128), nullable=False)
+    Password_Hash = db.Column(db.String(255), nullable=False)
 
     def set_password(self, password: str) -> None:
         self.Password_Hash = generate_password_hash(password)
