@@ -35,6 +35,10 @@ class PropertyCustomer(db.Model, Type2Mixin):
 
     users = db.relationship("User", backref="property", lazy=True)
     parking_customers = db.relationship("ParkingCustomer", backref="property", lazy=True)
+    security_links = db.relationship(
+        "SecurityProperty", backref="property", lazy=True
+    )
+
 
 
 class SecurityCustomer(db.Model, Type2Mixin):
