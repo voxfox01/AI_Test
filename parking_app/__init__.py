@@ -36,7 +36,8 @@ def create_app(config_object=None):
     app = Flask(__name__)
 
     # Credentials
-    db_url = os.environ.get("DATABASE_URL")
+    # Fall back to a local SQLite database if ``DATABASE_URL`` is not provided.
+    db_url = os.environ.get("DATABASE_URL", "sqlite:///parking.db")
     secret_key = os.environ.get("SECRET_KEY", "dev-insecure")
 
     app.config.from_mapping(
@@ -55,7 +56,22 @@ def create_app(config_object=None):
     from . import routes
     app.register_blueprint(routes.bp)
 
+    from .models import StatusCD
+
+    def _seed_status_codes():
+        """Insert default status codes if table is empty."""
+        if StatusCD.query.count() == 0:
+            db.session.add_all(
+                [
+                    StatusCD(CD_Code="A", Description="Active"),
+                    StatusCD(CD_Code="D", Description="Deleted"),
+                    StatusCD(CD_Code="M", Description="Modified"),
+                ]
+            )
+            db.session.commit()
+
     with app.app_context():
         db.create_all()
+        _seed_status_codes()
 
     return app
