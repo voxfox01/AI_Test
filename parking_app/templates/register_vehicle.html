@@ -3,24 +3,32 @@
 <h2>Register Vehicle</h2>
 <form method="post">
   <div class="mb-3">
+    <label class="form-label">First Name</label>
+    <input class="form-control" name="first_name">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Last Name</label>
+    <input class="form-control" name="last_name">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Unit / Apartment</label>
+    <input class="form-control" name="unit">
+  </div>
+  <div class="mb-3">
     <label class="form-label">License Plate</label>
     <input class="form-control" name="license_plate">
   </div>
   <div class="mb-3">
-    <label class="form-label">Apartment Number</label>
-    <input class="form-control" name="apartment">
+    <label class="form-label">Departure Date</label>
+    <input class="form-control" type="date" name="departure_date">
   </div>
   <div class="mb-3">
     <label class="form-label">Property</label>
     <select class="form-select" name="property_id">
       {% for prop in properties %}
-        <option value="{{ prop.id }}">{{ prop.name }}</option>
+        <option value="{{ prop.Property_ID }}">{{ prop.Property_Name }}</option>
       {% endfor %}
     </select>
-  </div>
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" name="is_guest" id="is_guest">
-    <label class="form-check-label" for="is_guest">Guest Vehicle</label>
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
 </form>
