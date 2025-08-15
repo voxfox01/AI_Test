@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ property.Property_Name }} Dashboard</h2>
+<p>Registered vehicles: {{ registered_count }}</p>
+<h4>Assign Security Company</h4>
+<form method="post" class="mb-3">
+  <div class="input-group">
+    <select name="security_id" class="form-select">
+      {% for sec in security_companies %}
+      <option value="{{ sec.Security_ID }}">{{ sec.Security_Name }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">Assign</button>
+  </div>
+</form>
+<h4>Current Security Companies</h4>
+<ul>
+  {% for link in assigned %}
+  <li>{{ link.security.Security_Name }}</li>
+  {% else %}
+  <li>No security company assigned</li>
+  {% endfor %}
+</ul>
+{% endblock %}
