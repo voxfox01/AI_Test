@@ -57,10 +57,22 @@ def register_vehicle():
 def signup_property():
     if request.method == 'POST':
         name = request.form['property_name']
+        address = request.form['property_address']
+        city = request.form['property_city']
+        state = request.form['property_state']
+        zip_code = request.form['property_zip']
+        contact = request.form['contact_number']
         username = request.form['username']
         password = request.form['password']
 
-        prop = PropertyCustomer(Property_Name=name)
+        prop = PropertyCustomer(
+            Property_Name=name,
+            Property_Address=address,
+            Property_City=city,
+            Property_State=state,
+            Property_Zip=zip_code,
+            Contact_Number=contact,
+        )
         db.session.add(prop)
         db.session.flush()
 
@@ -83,10 +95,20 @@ def signup_property():
 def signup_security():
     if request.method == 'POST':
         name = request.form['security_name']
+        address = request.form['security_address']
+        city = request.form['security_city']
+        state = request.form['security_state']
+        zip_code = request.form['security_zip']
         username = request.form['username']
         password = request.form['password']
 
-        sec = SecurityCustomer(Security_Name=name)
+        sec = SecurityCustomer(
+            Security_Name=name,
+            Security_Address=address,
+            Security_City=city,
+            Security_State=state,
+            Security_Zip=zip_code,
+        )
         db.session.add(sec)
         db.session.flush()
 
@@ -100,7 +122,7 @@ def signup_security():
         db.session.commit()
 
         login_user(user)
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.security_dashboard'))
 
     return render_template('signup_security.html')
 
@@ -113,6 +135,10 @@ def login():
         cred = Credential.query.filter_by(Username=username, Current_Flag=True).first()
         if cred and cred.check_password(password):
             login_user(cred.user)
+            if cred.user.Role == 'property_owner':
+                return redirect(url_for('main.owner_dashboard'))
+            if cred.user.Role in ['security_admin', 'security_guard']:
+                return redirect(url_for('main.security_dashboard'))
             return redirect(url_for('main.index'))
     return render_template('login.html')
 
@@ -163,3 +189,66 @@ def owner_dashboard():
         assigned=assigned,
         registered_count=reg_count,
     )
+
+
+@bp.route('/security_dashboard', methods=['GET', 'POST'])
+@login_required
+def security_dashboard():
+    if current_user.Role not in ['security_admin', 'security_guard']:
+        return redirect(url_for('main.index'))
+
+    security_obj = current_user.security
+    properties = [
+        link.property for link in security_obj.properties if link.Current_Flag
+    ]
+    employees = User.query.filter_by(
+        Security_ID=security_obj.Security_ID, Current_Flag=True
+    ).all()
+
+    if request.method == 'POST' and current_user.Role == 'security_admin':
+        first = request.form['first_name']
+        last = request.form['last_name']
+        role = request.form['role']
+        username = request.form['username']
+        password = request.form['password']
+
+        new_user = User(
+            First_Name=first,
+            Last_Name=last,
+            Role=role,
+            Security_ID=security_obj.Security_ID,
+        )
+        db.session.add(new_user)
+        db.session.flush()
+
+        cred = Credential(User_ID=new_user.User_ID, Username=username)
+        cred.set_password(password)
+        db.session.add(cred)
+        db.session.commit()
+        return redirect(url_for('main.security_dashboard'))
+
+    return render_template(
+        'security_dashboard.html',
+        security=security_obj,
+        properties=properties,
+        employees=employees,
+    )
+
+
+@bp.route('/remove_employee/<int:user_id>', methods=['POST'])
+@login_required
+def remove_employee(user_id):
+    if current_user.Role != 'security_admin':
+        return redirect(url_for('main.security_dashboard'))
+
+    user = User.query.filter_by(
+        User_ID=user_id,
+        Security_ID=current_user.Security_ID,
+        Current_Flag=True,
+    ).first()
+    if user:
+        user.Current_Flag = False
+        if user.credentials:
+            user.credentials.Current_Flag = False
+        db.session.commit()
+    return redirect(url_for('main.security_dashboard'))
