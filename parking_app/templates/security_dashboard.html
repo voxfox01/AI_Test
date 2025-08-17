@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Security Dashboard</h2>
+<h3>Properties</h3>
+<ul>
+  {% for prop in properties %}
+  <li>{{ prop.Property_Name }}</li>
+  {% else %}
+  <li>No properties assigned.</li>
+  {% endfor %}
+</ul>
+
+{% if current_user.Role == 'security_admin' %}
+<h3>Add Employee</h3>
+<form method="post">
+  <div class="mb-3">
+    <input class="form-control" name="first_name" placeholder="First Name" required>
+  </div>
+  <div class="mb-3">
+    <input class="form-control" name="last_name" placeholder="Last Name" required>
+  </div>
+  <div class="mb-3">
+    <select class="form-select" name="role" required>
+      <option value="security_admin">Admin</option>
+      <option value="security_guard">Security Guard</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <input class="form-control" name="username" placeholder="Username" required>
+  </div>
+  <div class="mb-3">
+    <input class="form-control" type="password" name="password" placeholder="Password" required>
+  </div>
+  <button class="btn btn-primary" type="submit">Add User</button>
+</form>
+
+<h3>Employees</h3>
+<ul>
+  {% for emp in employees %}
+  <li>{{ emp.First_Name }} {{ emp.Last_Name }} ({{ emp.Role }})
+    {% if emp.User_ID != current_user.User_ID %}
+    <form method="post" action="{{ url_for('main.remove_employee', user_id=emp.User_ID) }}" style="display:inline">
+      <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+    </form>
+    {% endif %}
+  </li>
+  {% else %}
+  <li>No employees.</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

@@ -32,6 +32,7 @@ class PropertyCustomer(db.Model, Type2Mixin):
     Property_City = db.Column(db.String(100))
     Property_State = db.Column(db.String(2))
     Property_Zip = db.Column(db.String(10))
+    Contact_Number = db.Column(db.String(20))
 
     users = db.relationship("User", backref="property", lazy=True)
     parking_customers = db.relationship("ParkingCustomer", backref="property", lazy=True)
@@ -46,6 +47,7 @@ class SecurityCustomer(db.Model, Type2Mixin):
 
     Security_ID = db.Column(db.Integer, primary_key=True)
     Security_Name = db.Column(db.String(128), nullable=False)
+    Security_Address = db.Column(db.String(256))
     Security_City = db.Column(db.String(100))
     Security_State = db.Column(db.String(2))
     Security_Zip = db.Column(db.String(10))
